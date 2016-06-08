@@ -18,6 +18,7 @@ namespace Microsoft.Rest.Generator.Go
         public static readonly List<string> AutorestImports = new List<string> { "github.com/Azure/go-autorest/autorest" };
         public static readonly List<string> StandardImports = new List<string> { "github.com/Azure/go-autorest/autorest/azure", "net/http" };
         public static readonly List<string> PageableImports = new List<string> { "net/http", "github.com/Azure/go-autorest/autorest/to" };
+        public static readonly List<string> ValidationImport = new List<string> { "github.com/Azure/go-autorest/autorest/validations" };
 
         // CommonInitialisms are those "words" within a name that Golint expects to be uppercase.
         // See https://github.com/golang/lint/blob/master/lint.go for detail.

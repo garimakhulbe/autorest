@@ -4,12 +4,17 @@
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Net;
+using System.Net.Configuration;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Rest.Generator.Azure;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Utilities;
+using Newtonsoft.Json.Schema;
 
 namespace Microsoft.Rest.Generator.Go
 {
@@ -59,7 +64,7 @@ namespace Microsoft.Rest.Generator.Go
             }
             return string.Join(" ", words.ToArray());
         }
-        
+
         public static string[] ToWords(this string value)
         {
             return SplitPattern.Split(value).Where(s => !string.IsNullOrEmpty(s)).ToArray();
@@ -80,7 +85,7 @@ namespace Microsoft.Rest.Generator.Go
             value = value.TrimStartsWith(packageName);
             if (value.Length == cchValue && packageName.EndsWith("s") && (value.Length - packageName.Length + 1) > 1)
             {
-                value = value.TrimStartsWith(packageName.Substring(0, packageName.Length-1));
+                value = value.TrimStartsWith(packageName.Substring(0, packageName.Length - 1));
             }
             return value;
         }
@@ -125,7 +130,7 @@ namespace Microsoft.Rest.Generator.Go
 
             return comments;
         }
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////
         //
         // Parameter Extensions
@@ -200,7 +205,7 @@ namespace Microsoft.Rest.Generator.Go
 
             return string.Format(
                 parameter.RequiresUrlEncoding()
-                    ? string.Format("autorest.Encode(\"{0}\",{1})", parameter.Location, s)
+                    ? string.Format("autorest.Encode(\"{0}\",{1})", parameter.Location.ToString().ToLower(), s)
                     : string.Format("{0}", s),
                 value);
         }
@@ -350,8 +355,8 @@ namespace Microsoft.Rest.Generator.Go
             var enumType = type as EnumType;
 
             return dictionaryType != null
-                || interfaceType !=  null
-                || (    primaryType != null
+                || interfaceType != null
+                || (primaryType != null
                  && (primaryType.Type == KnownPrimaryType.ByteArray
                         || primaryType.Type == KnownPrimaryType.Stream
                         || primaryType.Type == KnownPrimaryType.String))
@@ -368,12 +373,12 @@ namespace Microsoft.Rest.Generator.Go
 
             return dictionaryType != null
                 || interfaceType != null
-                || (    primaryType != null
+                || (primaryType != null
                    && (primaryType.Type == KnownPrimaryType.ByteArray
                       || primaryType.Type == KnownPrimaryType.Stream))
                 || sequenceType != null;
         }
-        
+
         public static string GetEmptyCheck(this IType type, string valueReference, bool asEmpty = true)
         {
             if (type is PrimaryType)
@@ -465,8 +470,8 @@ namespace Microsoft.Rest.Generator.Go
 
             // If the type is a paged model type, ensure the nextLink field exists
             // Note: Inject the field into a copy of the property list so as to not pollute the original list
-            if (    compositeType is ModelTemplateModel
-                &&  !String.IsNullOrEmpty((compositeType as ModelTemplateModel).NextLink))
+            if (compositeType is ModelTemplateModel
+                && !String.IsNullOrEmpty((compositeType as ModelTemplateModel).NextLink))
             {
                 var nextLinkField = (compositeType as ModelTemplateModel).NextLink;
                 if (!properties.Any(p => p.Name == nextLinkField))
@@ -500,7 +505,7 @@ namespace Microsoft.Rest.Generator.Go
                     indented.AppendFormat("{0} *{1} {2}\n", property.Name, property.Type.Name, property.JsonTag());
                 }
             }
-            
+
             return indented.ToString();
         }
 
@@ -566,58 +571,220 @@ namespace Microsoft.Rest.Generator.Go
             sequenceType.ElementType.AddImports(imports);
         }
 
-        /// <summary>
-        /// Generate code to perform required validation on a type
-        /// </summary>
-        /// <param name="type">The type to validate</param>
-        /// <param name="scope">A scope provider for generating variable names as necessary</param>
-        /// <param name="valueReference">A reference to the value being validated</param>
-        /// <returns>The code to validate the reference of the given type</returns>
-        public static string ValidateType(this IType type, IScopeProvider scope, string valueReference)
-        {
-            CompositeType model = type as CompositeType;
-            SequenceType sequence = type as SequenceType;
-            DictionaryType dictionary = type as DictionaryType;
-            /*
-            if (model != null && model.Properties.Any())
-            {
-                return CheckNotNull(valueReference, string.Format("{0}.Validate();", valueReference));
-            }
-            if (sequence != null)
-            {
-                var elementVar = scope.GetVariableName("element");
-                var innerValidation = sequence.ElementType.ValidateType(scope, elementVar);
-                if (!string.IsNullOrEmpty(innerValidation))
-                {
-                    var sequenceBuilder = string.Format("foreach ( var {0} in {1})\r\n{{\r\n", elementVar,
-                        valueReference);
-                    sequenceBuilder += string.Format("    {0}\r\n}}", innerValidation);
-                    return CheckNotNull(valueReference, sequenceBuilder);
-                }
-            }
-            else if (dictionary != null)
-            {
-                var valueVar = scope.GetVariableName("valueElement");
-                var innerValidation = dictionary.ValueType.ValidateType(scope, valueVar);
-                if (!string.IsNullOrEmpty(innerValidation))
-                {
-                    var sequenceBuilder = string.Format("if ( {0} != null)\r\n{{\r\n", valueReference);
-                    sequenceBuilder += string.Format("    foreach ( var {0} in {1}.Values)\r\n    {{\r\n", valueVar,
-                        valueReference);
-                    sequenceBuilder += string.Format("        {0}\r\n    }}\r\n}}", innerValidation);
-                    return CheckNotNull(valueReference, sequenceBuilder);
-                }
-            }
-             */
+        /* /// <summary>
+         /// Generate code to perform required validation on a type
+         /// </summary>
+         /// <param name="type">The type to validate</param>
+         /// <param name="scope">A scope provider for generating variable names as necessary</param>
+         /// <param name="valueReference">A reference to the value being validated</param>
+         /// <returns>The code to validate the reference of the given type</returns>
+         public static string ValidateType(this IType type, IScopeProvider scope, string valueReference)
+         {
+             CompositeType model = type as CompositeType;
+             SequenceType sequence = type as SequenceType;
+             DictionaryType dictionary = type as DictionaryType;
+             /*
+             if (model != null && model.Properties.Any())
+             {
+                 return CheckNotNull(valueReference, string.Format("{0}.Validate();", valueReference));
+             }
+             if (sequence != null)
+             {
+                 var elementVar = scope.GetVariableName("element");
+                 var innerValidation = sequence.ElementType.ValidateType(scope, elementVar);
+                 if (!string.IsNullOrEmpty(innerValidation))
+                 {
+                     var sequenceBuilder = string.Format("foreach ( var {0} in {1})\r\n{{\r\n", elementVar,
+                         valueReference);
+                     sequenceBuilder += string.Format("    {0}\r\n}}", innerValidation);
+                     return CheckNotNull(valueReference, sequenceBuilder);
+                 }
+             }
+             else if (dictionary != null)
+             {
+                 var valueVar = scope.GetVariableName("valueElement");
+                 var innerValidation = dictionary.ValueType.ValidateType(scope, valueVar);
+                 if (!string.IsNullOrEmpty(innerValidation))
+                 {
+                     var sequenceBuilder = string.Format("if ( {0} != null)\r\n{{\r\n", valueReference);
+                     sequenceBuilder += string.Format("    foreach ( var {0} in {1}.Values)\r\n    {{\r\n", valueVar,
+                         valueReference);
+                     sequenceBuilder += string.Format("        {0}\r\n    }}\r\n}}", innerValidation);
+                     return CheckNotNull(valueReference, sequenceBuilder);
+                 }
+             }
 
-            return null;
-        }
+
+             return null;
+         }*/
 
         public static bool HasModelTypes(this Method method)
         {
             return method.Parameters.Any(p => p.Type is CompositeType) ||
                    method.Responses.Any(r => r.Value.Body is CompositeType) || method.ReturnType.Body is CompositeType ||
                    method.DefaultResponse.Body is CompositeType;
+        }
+
+        public static string Validate(this IEnumerable<Parameter> parameters, HttpMethod method)
+        {
+            List<string> v = new List<string>();
+            foreach (var p in parameters)
+            {
+                var name = p.SerializedName.IsApiVersion()
+                    ? "client." + ApiVersionName
+                    : !p.IsClientProperty()
+                        ? p.Name
+                        : "client." + p.Name.Capitalize();
+
+                List<string> x = new List<string>();
+                if (p.Type is CompositeType)
+                    x.AddRange(p.ValidateCompositeType(name, method));
+                else
+                    x.AddRange(p.ValidateType(name, method));
+                if (x.Count != 0)
+                    v.Add($"{{{name},\n[]validations.Constraint{{{string.Join(",\n", x)}}}}}");
+            }
+            return string.Join(",\n", v);
+        }
+
+        public static List<string> ValidateType(this IParameter p, string name, HttpMethod method,
+            bool isCompositeProperties = false)
+        {
+            List<string> x = new List<string>();
+
+            if (p.IsPathParameter() && p.Type.IsEmptyValueType())
+                x.Add(GetConstraint(name, "Empty", $"{p.IsRequired}".ToLower()));
+
+            if (method != HttpMethod.Patch || !p.IsBodyParameter() || isCompositeProperties)
+                x.AddRange(p.Constraints.Select(c => GetConstraint(name, c.Key.ToString(), c.Value)).ToList());
+
+            List<string> y = new List<string>();
+            if (x.Count > 0)
+            {
+                if (p.CheckNull() || isCompositeProperties)
+                    y.AddRange(x.AddChain(name, "Null", p.IsRequired));
+                else
+                    y.AddRange(x);
+            }
+            else
+            {
+                if (p.IsRequired && (p.CheckNull() || isCompositeProperties))
+                    y.AddNullValidation(name, p.IsRequired);
+            }
+            return y;
+        }
+
+        public static List<string> ValidateCompositeType(this IParameter p, string name, HttpMethod method, bool isCompositeProperties = false)
+        {
+            List<string> x = new List<string>();
+            if (method != HttpMethod.Patch || !p.IsBodyParameter() || isCompositeProperties)
+            {
+                foreach (var prop in ((CompositeType) p.Type).Properties)
+                {
+                    var primary = prop.Type as PrimaryType;
+                    var sequence = prop.Type as SequenceType;
+                    var map = prop.Type as MapType;
+                    var composite = prop.Type as CompositeType;
+
+                    if (primary != null || sequence != null || map != null)
+                        x.AddRange(prop.ValidateType(prop.Name, method, true));
+                    else if (composite != null)
+                        x.AddRange(prop.ValidateCompositeType(prop.Name, method, true));
+                }
+            }
+
+            x.AddRange(from prop in ((CompositeType)p.Type).Properties
+                       where prop.IsReadOnly
+                       select GetConstraint(prop.Name, "ReadOnly", "true"));
+
+            List<string> y = new List<string>();
+            if (x.Count > 0)
+            {
+                if (p.CheckNull() || isCompositeProperties)
+                    y.AddRange(x.AddChain(name, "Null", p.IsRequired));
+                else
+                    y.AddRange(x);
+            }
+            else
+            {
+                if (p.IsRequired && (p.CheckNull() || isCompositeProperties))
+                    y.AddNullValidation(name, p.IsRequired);
+            }
+            return y;
+        }
+
+        public static void AddNullValidation(this List<string> v, string name, bool isRequired = false)
+        {
+            v.Add(GetConstraint(name, "Null", $"{isRequired}".ToLower()));
+        }
+
+        public static List<string> AddChain(this List<string> x, string name, string constraint, bool isRequired)
+        {
+            List<string> a = new List<string>
+            {
+                GetConstraint(name, constraint, $"{isRequired}".ToLower(), true),
+                $"[]validations.Constraint{{{x[0]}"
+            };
+            a.AddRange(x.GetRange(1, x.Count - 1));
+            a.Add("}}");
+            return a;
+        }
+
+        public static bool CheckNull(this IParameter p)
+        {
+            return p is Parameter && (p.Type.IsNullValueType() || !(p.IsRequired || p.Type.CanBeEmpty()));
+        }
+
+        public static bool IsEmptyValueType(this IType t)
+        {
+            var dictionaryType = t as DictionaryType;
+            var interfaceType = t as InterfaceType;
+            var primaryType = t as PrimaryType;
+            var sequenceType = t as SequenceType;
+            var enumType = t as EnumType;
+
+            return dictionaryType != null
+                || interfaceType != null
+                || (primaryType != null
+                 && (primaryType.Type == KnownPrimaryType.ByteArray
+                        || primaryType.Type == KnownPrimaryType.String))
+                || sequenceType != null
+                || enumType != null;
+        }
+
+        public static bool IsNullValueType(this IType t)
+        {
+            var dictionaryType = t as DictionaryType;
+            var interfaceType = t as InterfaceType;
+            var primaryType = t as PrimaryType;
+            var sequenceType = t as SequenceType;
+
+            return dictionaryType != null
+                || interfaceType != null
+                || (primaryType != null
+                   && primaryType.Type == KnownPrimaryType.ByteArray)
+                || sequenceType != null;
+        }
+
+        public static bool IsBodyParameter(this IParameter p)
+        {
+            return p is Parameter && ((Parameter)p).Location == ParameterLocation.Body;
+        }
+
+        public static bool IsPathParameter(this IParameter p)
+        {
+            return p is Parameter && ((Parameter)p).Location == ParameterLocation.Path;
+        }
+
+        public static string GetConstraint(string name, string constraintName, string constraintValue, bool chain = false)
+        {
+            var value = constraintName == Constraint.Pattern.ToString()
+                                             ? string.Format("\"{0}\"", constraintValue.Replace("\\", "\\\\"))
+                                             : constraintValue;
+            return string.Format(chain
+                                     ? "\t{{\"{0}\", validations.{1}, {2} "
+                                     : "\t{{\"{0}\", validations.{1}, {2}, nil }}",
+                                     name, constraintName, value);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -644,7 +811,7 @@ namespace Microsoft.Rest.Generator.Go
                     ? method.ReturnType
                     : method.DefaultResponse;
         }
-        
+
         public static bool IsPageable(this Method method)
         {
             return !string.IsNullOrEmpty(method.NextLink());
@@ -652,12 +819,13 @@ namespace Microsoft.Rest.Generator.Go
 
         public static bool IsLongRunningOperation(this Method method)
         {
-            try {
+            try
+            {
                 return method.Extensions.ContainsKey(AzureExtensions.LongRunningExtension) && (bool)method.Extensions[AzureExtensions.LongRunningExtension];
             }
-            catch(InvalidCastException e)
+            catch (InvalidCastException e)
             {
-                throw new Exception(string.Format(e.Message+" The value \'{0}\' for extension {1} for method {2} is invalid in Swagger. It should be boolean.",
+                throw new Exception(string.Format(e.Message + " The value \'{0}\' for extension {1} for method {2} is invalid in Swagger. It should be boolean.",
                             method.Extensions[AzureExtensions.LongRunningExtension], AzureExtensions.LongRunningExtension, method.Group + "." + method.Name));
             }
         }

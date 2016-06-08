@@ -108,6 +108,7 @@ namespace Microsoft.Rest.Generator.Go
             {
                 var imports = new HashSet<string>();
                 imports.UnionWith(GoCodeNamer.AutorestImports);
+                bool validationImports = false; 
                 if (MethodTemplateModels.Count() > 0)
                 {
                     imports.UnionWith(GoCodeNamer.StandardImports);
@@ -116,11 +117,14 @@ namespace Microsoft.Rest.Generator.Go
                         {
                             mtm.Parameters.ForEach(p => p.AddImports(imports));
                             if (mtm.HasReturnValue() && !mtm.ReturnValue().Body.IsPrimaryType(KnownPrimaryType.Stream))
-                            {
                                 mtm.ReturnType.Body.AddImports(imports);
-                            }
+
+                            if (!string.IsNullOrEmpty(mtm.ParameterValidations))
+                                validationImports = true;
                         });
                 }
+                if (validationImports)
+                    imports.UnionWith(GoCodeNamer.ValidationImport);
                 return imports.OrderBy(i => i);
             }
         }

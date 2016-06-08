@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-
+using System.Security.Cryptography;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Go.Properties;
 using Microsoft.Rest.Generator.Utilities;
@@ -260,6 +260,14 @@ namespace Microsoft.Rest.Generator.Go
             }
         }
 
+        public string ParameterValidations
+        {
+            get
+            {
+                return Parameters.Validate(HttpMethod);
+            }
+        }
+
         public List<string> PrepareDecorators
         {
             get
@@ -376,8 +384,8 @@ namespace Microsoft.Rest.Generator.Go
             return !string.IsNullOrEmpty(parameter) 
                         ? string.Format("autorest.NewErrorWithError(err, \"{0}.{1}\", \"{2}\", nil , \"{3}\'{4}\'\")", PackageName, Owner, ScopedName, phase, parameter)
                         : string.IsNullOrEmpty(response)
-                                ? string.Format("autorest.NewErrorWithError(err, \"{0}.{1}\", \"{2}\", nil , \"Failure {3} request\")", PackageName, Owner, ScopedName, phase)
-                                : string.Format("autorest.NewErrorWithError(err, \"{0}.{1}\", \"{2}\", {3}, \"Failure {4} request\")", PackageName, Owner, ScopedName, response, phase);
+                                ? string.Format("autorest.NewErrorWithError(err, \"{0}.{1}\", \"{2}\", nil , \"{3}\")", PackageName, Owner, ScopedName, phase)
+                                : string.Format("autorest.NewErrorWithError(err, \"{0}.{1}\", \"{2}\", {3}, \"{4}\")", PackageName, Owner, ScopedName, response, phase);
         }
     }
 }

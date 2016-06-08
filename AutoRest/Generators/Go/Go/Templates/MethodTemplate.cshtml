@@ -7,6 +7,7 @@
 
 @using Microsoft.Rest.Generator.ClientModel
 @using Microsoft.Rest.Generator.Go
+@using Extensions = Microsoft.Rest.Generator.Utilities.Extensions
 @inherits Microsoft.Rest.Generator.Go.Template<Microsoft.Rest.Generator.Go.MethodTemplateModel>
 
 @{
@@ -40,35 +41,33 @@
 }
 
 func (client @(Model.Owner)) @(Model.MethodSignature) (@Model.MethodReturnSignature) {
-    @foreach (Parameter p in Model.Parameters.FindAll(p=> p.IsRequired))
+    @if (Model.ParameterValidations.Length > 0)
     {
-    if (p.Type.CanBeNull())
-    { 
-    @:if @(p.Type.GetNullCheck(p.GetParameterName(), true)) {
-        @:return result, @(Model.AutorestError("Required parameter is empty - ", null, p.GetParameterName()))
+    @:if err := validations.Validate([]validations.Validation{
+        @:@(Model.ParameterValidations)}); err != nil {
+            @:return result, @(Model.AutorestError("Validation error "))
     @:}
-    @:@EmptyLine
-    }
+    @EmptyLine
     }
     req, err := client.@(Model.PreparerMethodName)(@(Model.HelperInvocationParameters))
     if err != nil {
-        return result, @(Model.AutorestError("preparing"))
+            return result, @(Model.AutorestError("Failure preparing request"))
     }
 
     @EmptyLine
     resp, err := client.@(Model.SenderMethodName)(req)
     if err != nil {
         @(Model.Response)
-        return result, @(Model.AutorestError("sending", "resp"))
+        return result, @(Model.AutorestError("Failure sending request", "resp"))
     }
 
-    @EmptyLine
-    result, err = client.@(Model.ResponderMethodName)(resp)
+        @EmptyLine
+        result, err = client.@(Model.ResponderMethodName)(resp)
     if err != nil {
-        err = @(Model.AutorestError("responding to", "resp"))
+            err = @(Model.AutorestError("Failure responding to request", "resp"))
     }
 
-    @EmptyLine
+        @EmptyLine
     return
 }
 
@@ -163,7 +162,7 @@ func (client @(Model.Owner)) @(Model.ResponderMethodName)(resp *http.Response) (
 @:func (client @(Model.Owner)) @(Model.NextMethodName)(lastResults @(Model.ReturnValue().Body.Name)) (@Model.MethodReturnSignature) {
     @:req, err := lastResults.@((Model.ReturnValue().Body as CompositeType).PreparerMethodName())()
     @:if err != nil {
-        @:return result, @(Model.AutorestError("preparing next results request"))
+        @:return result, @(Model.AutorestError("Failure preparing next results request"))
     @:}
     @:if req == nil {
         @:return
@@ -173,13 +172,13 @@ func (client @(Model.Owner)) @(Model.ResponderMethodName)(resp *http.Response) (
     @:resp, err := client.@(Model.SenderMethodName)(req)
     @:if err != nil {
         @:@(Model.Response)
-        @:return result, @(Model.AutorestError("sending next results request", "resp"))
+        @:return result, @(Model.AutorestError("Failure sending next results request", "resp"))
     @:}
 
     @:@EmptyLine
     @:result, err = client.@(Model.ResponderMethodName)(resp)
     @:if err != nil {
-        @:err = @(Model.AutorestError("responding to next results request", "resp"))
+        @:err = @(Model.AutorestError("Failure responding to next results request", "resp"))
     @:}
 
     @EmptyLine
