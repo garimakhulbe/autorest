@@ -1,0 +1,24 @@
+G
+
+HTTP
+
+    Failing (but passing in M code?)
+        TestDelete503
+        TestGet502
+        TestHead408
+        TestPatch500
+        TestPatch504
+        TestPost503
+        TestPut500
+        TestPut504
+
+==============================
+M
+
+COMPLEX
+Fixed (I hope) tests
+    TestPutComplexPolymorphicValid (easy fix)
+    TestGetComplexPolymorphicValid (added deepequals check)
+
+NUMBER
+Added tests for decimal in numbergroup

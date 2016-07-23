@@ -1,0 +1,10 @@
+package: Tests
+import:
+- package: gopkg.in/check.v1
+- package: github.com/Azure/go-autorest
+  subpackages:
+  - autorest
+  - autorest/azure
+  - autorest/date
+- package: github.com/satori/uuid
+- package: github.com/shopspring/decimal

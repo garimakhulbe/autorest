@@ -547,6 +547,14 @@ gulp.task('test:java:azure', shell.task(basePathOrThrow() + '/gradlew :azure-cod
 gulp.task('test:python', shell.task('tox', {cwd: './AutoRest/Generators/Python/Python.Tests/', verbosity: 3}));
 gulp.task('test:python:azure', shell.task('tox', {cwd: './AutoRest/Generators/Python/Azure.Python.Tests/', verbosity: 3}));
 
+function testGo() {
+  process.env.GOPATH = basePathOrThrow() + '/AutoRest/Generators/Go/Go.Tests';
+  return shell.task(['glide up', 'go run ../runner/runner.go'], {
+      cwd: './AutoRest/Generators/Go/Go.Tests/src/Tests', verbosity: 3});
+}
+
+gulp.task('test:go', testGo());
+
 var xunitTestsDlls = [
   'AutoRest/AutoRest.Core.Tests/bin/Net45-Debug/AutoRest.Core.Tests.dll',
   'AutoRest/Modelers/Swagger.Tests/bin/Net45-Debug/AutoRest.Modeler.Swagger.Tests.dll',
@@ -664,6 +672,7 @@ gulp.task('test', function(cb){
       'test:java:azure',
       'test:python',
       'test:python:azure',
+      'test:go',
       'test:nugetPackages',
       cb);
   } else {
@@ -678,6 +687,7 @@ gulp.task('test', function(cb){
       'test:java:azure',
       'test:python',
       'test:python:azure',
+      'test:go',
       cb);
   }
 });
