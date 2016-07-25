@@ -297,7 +297,7 @@ namespace Microsoft.Rest.Generator.Go
                     decorators.Add(
                         FormDataParameters.Any(p => p.Type.IsPrimaryType(KnownPrimaryType.Stream))
                             ? "autorest.WithMultiPartFormData(formDataParameters)"
-                            : "autorest.WithFormData(formDataParameters)"
+                            : "autorest.WithFormData(autorest.MapToValues(formDataParameters))"
                         );
                 }
 
