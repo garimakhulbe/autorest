@@ -10,6 +10,13 @@ import (
 	chk "gopkg.in/check.v1"
 )
 
+// Not yet in coverage
+// So swagger files are not changed, code for this tests won't be generated
+// TestGetUnixTime
+// TestPutUnixTimeDate
+// TestGetInvalidUnixTime
+// TestGetNullUnixTime
+
 func Test(t *testing.T) { chk.TestingT(t) }
 
 type IntegerSuite struct{}
@@ -74,3 +81,25 @@ func (s *IntegerSuite) TestPutMin64(c *chk.C) {
 	_, err := intClient.PutMin64(int64(math.MinInt64))
 	c.Assert(err, chk.IsNil)
 }
+
+// func (s *IntegerSuite) TestGetUnixTime(c *chk.C) {
+// 	unixTime, err := intClient.GetUnixTime()
+// 	c.Assert(err, chk.IsNil)
+// 	c.Assert(unixTime, chk.Equals, time.Date(2016, time.April, 13, 0, 0, 0, 0, time.UTC).Unix())
+// }
+
+// func (s *IntegerSuite) TestPutUnixTimeDate(c *chk.C) {
+// 	_, err := intClient.PutUnixTimeDate(time.Date(2016, time.April, 13, 0, 0, 0, 0, time.UTC).Unix())
+// 	c.Assert(err, chk.IsNil)
+// }
+
+// func (s *IntegerSuite) TestGetInvalidUnixTime(c *chk.C) {
+// 	_, err := intClient.GetInvalidUnixTime()
+// 	c.Assert(err, chk.NotNil)
+// }
+
+// func (s *IntegerSuite) TestGetNullUnixTime(c *chk.C) {
+// 	res, err := intClient.GetNullUnixTime()
+// 	c.Assert(err, chk.IsNil)
+// 	c.Assert(res.Value, chk.IsNil)
+// }

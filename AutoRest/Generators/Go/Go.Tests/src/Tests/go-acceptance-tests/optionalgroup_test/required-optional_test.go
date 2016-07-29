@@ -1,24 +1,3 @@
-//Explicit tests missing in G Repo
-//Go doesn't support nullable types so we can't send null in parameter.
-//It will give compile time error.
-
-//These ones accepted nil parameter
-//TestPostRequiredArrayHeader
-//TestPostRequiredArrayParameter
-
-//These four can take empty structs
-//TestPostRequiredArrayProperty
-//TestPostRequiredClassParameter
-//TestPostRequiredClassProperty
-//TestPostRequiredIntegerProperty
-
-//These ones didnt take a nil :(
-//TestPostRequiredIntegerParameter
-//TestPostRequiredIntegerHeader
-
-//Implicit tests missing
-//TestGetOptionalGlobalQuery --- complie error int32 checking with nil
-
 package optionalgroup_test
 
 import (
@@ -30,6 +9,11 @@ import (
 	chk "gopkg.in/check.v1"
 )
 
+// Not in coverage yet
+// TestPostRequiredIntegerParameter
+// TestPostRequiredIntegerHeader
+// TestGetOptionalGlobalQuery
+
 func Test(t *testing.T) { chk.TestingT(t) }
 
 type RequiredOptionalSuite struct{}
@@ -40,13 +24,13 @@ var explicitClient = getRequiredExplicitTestClient()
 var implicitClient = getRequiredImplicitTestClient()
 
 func getRequiredExplicitTestClient() ExplicitClient {
-	c := NewExplicitClient("", "", 0)
+	c := NewExplicitClient("", "", int32(0))
 	c.BaseURI = utils.GetBaseURI()
 	return c
 }
 
 func getRequiredImplicitTestClient() ImplicitClient {
-	c := NewImplicitClient("", "", 0)
+	c := NewImplicitClient("", "", int32(0))
 	c.BaseURI = utils.GetBaseURI()
 	return c
 }

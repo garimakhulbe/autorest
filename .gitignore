@@ -1,6 +1,10 @@
 ## Ignore generated code 
 AutoRest/NugetPackageTest/Generated
 AutoRest/Generators/NodeJS/NodeJS.Tests/AcceptanceTests/*.js
+AutoRest/Generators/Go/Go.Tests/src/Tests/Generated
+AutoRest/Generators/Go/Go.Tests/src/Tests/vendor
+AutoRest/Generators/Go/Go.Tests/src/Tests/glide.lock
+
 
 ## Ignore user-specific files, temporary files, build results, etc.
 AutoRest/**/Templates/*.cs

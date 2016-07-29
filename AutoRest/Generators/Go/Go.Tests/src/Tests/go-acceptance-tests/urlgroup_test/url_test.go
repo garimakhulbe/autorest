@@ -14,11 +14,10 @@ import (
 )
 
 //Not in coverage, for now
+//So swagger files are not changed, code for this tests won't be generated
 //TestPathBase64URL
-//TestPathStringNull
 //TestPathStringUnicode
-
-//PathByteNull -- not sure if correctly written
+//TestPathGetUnixTimeUrl
 
 func Test(t *testing.T) { chk.TestingT(t) }
 
@@ -48,6 +47,8 @@ func getPathClient() PathsClient {
 	return c
 }
 
+//path tests
+
 func (s *URLSuite) TestPathGetBooleanFalse(c *chk.C) {
 	_, err := pathClient.GetBooleanFalse(false)
 	c.Assert(err, chk.IsNil)
@@ -57,6 +58,11 @@ func (s *URLSuite) TestPathGetBooleanTrue(c *chk.C) {
 	_, err := pathClient.GetBooleanTrue(true)
 	c.Assert(err, chk.IsNil)
 }
+
+// func (s *URLSuite) TestPathGetUnixTimeUrl(c *chk.C) {
+// 	_, err := pathClient.UnixTimeUrl(time.Date(2016, time.April, 13, 0, 0, 0, 0, time.UTC).Unix())
+// 	c.Assert(err, chk.IsNil)
+// }
 
 func (s *URLSuite) TestPathByteEmpty(c *chk.C) {
 	_, err := pathClient.ByteEmpty([]byte{})
@@ -154,7 +160,6 @@ func (s *URLSuite) TestPathStringNull(c *chk.C) {
 	c.Assert(err, chk.NotNil)
 }
 
-// Need to implement new Encoding function
 func (s *URLSuite) TestPathStringURLEncoded(c *chk.C) {
 	_, err := pathClient.StringURLEncoded("begin!*'();:@ &=+$,/?#[]end")
 	c.Assert(err, chk.IsNil)
@@ -167,12 +172,12 @@ func (s *URLSuite) TestPathStringURLEncoded(c *chk.C) {
 // }
 
 // func (s *URLSuite) TestPathBase64URL(c *chk.C) {
-// 	encoded := base64.StdEncoding.EncodeToString([]byte("lorem"))
+// 	encoded := base64.URLEncoding.EncodeToString([]byte("lorem"))
 // 	_, err := pathClient.Base64URL(encoded)
 // 	c.Assert(err, chk.IsNil)
 // }
 
-// queries test
+// queries tests
 
 func (s *URLSuite) TestQueryArrayStringCsvEmpty(c *chk.C) {
 	_, err := queryClient.ArrayStringCsvEmpty([]string{})
@@ -353,7 +358,8 @@ func (s *URLSuite) TestQueryStringURLEncoded(c *chk.C) {
 	c.Assert(err, chk.IsNil)
 }
 
-//pathitems tests
+//path items tests
+
 func (s *URLSuite) TestPathItemGetAllWithValues(c *chk.C) {
 	pathItemClient.GlobalStringPath = "globalStringPath"
 	pathItemClient.GlobalStringQuery = "globalStringQuery"

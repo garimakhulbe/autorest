@@ -1,4 +1,4 @@
-/// <binding />
+/// <binding Clean='clean' />
 var gulp = require('gulp'),
 msbuild = require('gulp-msbuild'),
 debug = require('gulp-debug'),
@@ -90,6 +90,31 @@ var rubyMappings = {
   'model_flattening':['../../../TestServer/swagger/model-flattening.json', 'ModelFlatteningModule'],
 };
 
+var goMappings = {
+  'body-array':['../../../TestServer/swagger/body-array.json','arraygroup'],
+  'body-boolean':['../../../TestServer/swagger/body-boolean.json', 'booleangroup'],
+  'body-byte':['../../../TestServer/swagger/body-byte.json','bytegroup'],
+  'body-complex':['../../../TestServer/swagger/body-complex.json','complexgroup'],
+  'body-date':['../../../TestServer/swagger/body-date.json','dategroup'],
+  'body-datetime-rfc1123':['../../../TestServer/swagger/body-datetime-rfc1123.json','datetimerfc1123group'],
+  'body-datetime':['../../../TestServer/swagger/body-datetime.json','datetimegroup'],
+  'body-dictionary':['../../../TestServer/swagger/body-dictionary.json','dictionarygroup'],
+  'body-duration':['../../../TestServer/swagger/body-duration.json','durationgroup'],  
+  'body-file':['../../../TestServer/swagger/body-file.json', 'filegroup'],
+  'body-formdata':['../../../TestServer/swagger/body-formdata.json', 'formdatagroup'],
+  'body-integer':['../../../TestServer/swagger/body-integer.json','integergroup'],
+  'body-number':['../../../TestServer/swagger/body-number.json','numbergroup'],
+  'body-string':['../../../TestServer/swagger/body-string.json','stringgroup'],
+  'custom-baseurl':['../../../TestServer/swagger/custom-baseUrl.json', 'custombaseurlgroup'],
+  'header':['../../../TestServer/swagger/header.json','headergroup'],
+  'http-infrastructure':['../../../TestServer/swagger/httpInfrastructure.json','httpinfrastructuregroup'],
+  'model-flattening':['../../../TestServer/swagger/model-flattening.json', 'modelflatteninggroup'],
+  'report':['../../../TestServer/swagger/report.json','report'],
+  'required-optional':['../../../TestServer/swagger/required-optional.json','optionalgroup'],
+  'url':['../../../TestServer/swagger/url.json','urlgroup'],
+  'validation':['../../../TestServer/swagger/validation.json', 'validationgroup'],
+};
+
 var defaultAzureMappings = {
   'AcceptanceTests/Lro': '../../../TestServer/swagger/lro.json',
   'AcceptanceTests/Paging': '../../../TestServer/swagger/paging.json',
@@ -128,6 +153,8 @@ var rubyAzureMappings = {
   'azure_url':['../../../TestServer/swagger/subscriptionId-apiVersion.json', 'AzureUrlModule'],
   'azure_special_properties': ['../../../TestServer/swagger/azure-special-properties.json', 'AzureSpecialPropertiesModule'],
   'azure_report':['../../../TestServer/swagger/azure-report.json', 'AzureReportModule'],
+  'custom_base_uri':['../../../TestServer/swagger/custom-baseUrl.json', 'CustomBaseUriModule'],
+  'custom_base_uri_more':['../../../TestServer/swagger/custom-baseUrl-more-options.json', 'CustomBaseUriMoreModule'],
 };
 
 gulp.task('regenerate:expected', function(cb){
@@ -143,6 +170,7 @@ gulp.task('regenerate:expected', function(cb){
       'regenerate:expected:javaazure',
       'regenerate:expected:python',
       'regenerate:expected:pythonazure',
+      'regenerate:expected:go',
       'regenerate:expected:samples'
     ],
     cb);
@@ -157,7 +185,8 @@ gulp.task('regenerate:delete', function(cb){
     'AutoRest/Generators/Java/Java.Tests/src/main/java',
     'AutoRest/Generators/Java/Azure.Java.Tests/src/main/java',
     'AutoRest/Generators/Python/Python.Tests/Expected',
-    'AutoRest/Generators/Python/Azure.Python.Tests/Expected'
+    'AutoRest/Generators/Python/Azure.Python.Tests/Expected',
+    'AutoRest/Generators/Go/Go.Tests/src/Tests/Generated'
   ], cb);
 });
 
@@ -412,6 +441,17 @@ gulp.task('regenerate:expected:samples:azure', function(){
   }
 });
 
+gulp.task('regenerate:expected:go', function(cb){
+  regenExpected({
+    'outputBaseDir': 'AutoRest/Generators/Go/Go.Tests',
+    'inputBaseDir': 'AutoRest/Generators/CSharp/CSharp.Tests',
+    'mappings': goMappings,
+    'outputDir': 'src/Tests/Generated',
+    'codeGenerator': 'Go',
+    'flatteningThreshold': '1'
+  }, cb);
+})
+
 var msBuildToolsVersion = 12.0;
 if (isWindows) {
     fs.readdirSync('C:/Program Files (x86)/MSBuild/').forEach(function (item) {
@@ -553,7 +593,7 @@ function testGo() {
       cwd: './AutoRest/Generators/Go/Go.Tests/src/Tests', verbosity: 3});
 }
 
-gulp.task('test:go', testGo());
+gulp.task('test:go', ['regenerate:expected:go'], testGo());
 
 var xunitTestsDlls = [
   'AutoRest/AutoRest.Core.Tests/bin/Net45-Debug/AutoRest.Core.Tests.dll',

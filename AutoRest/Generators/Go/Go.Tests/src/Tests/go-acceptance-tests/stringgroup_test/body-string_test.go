@@ -9,6 +9,13 @@ import (
 	chk "gopkg.in/check.v1"
 )
 
+// Not in coverage yet
+// So swagger files are not changed, code for this tests won't be generated
+// TestGetBase64Encoded
+// TestGetBase64UrlEncoded
+// TestPutBase64UrlEncoded
+// TestGetNullBase64UrlEncoded
+
 func Test(t *testing.T) { chk.TestingT(t) }
 
 type StringSuite struct{}
@@ -87,6 +94,35 @@ func (s *StringSuite) TestPutNullString(c *chk.C) {
 	_, err := stringClient.PutNull("")
 	c.Assert(err, chk.IsNil)
 }
+
+// func (s *StringSuite) TestGetBase64Encoded(c *chk.C) {
+// 	res, err := stringClient.GetBase64Encoded()
+// 	c.Assert(err, chk.IsNil)
+// 	var expected []byte
+// 	base64.StdEncoding.Encode(expected, []byte("a string that gets encoded with base64"))
+// 	c.Assert(res.Value, chk.DeepEquals, expected)
+// }
+
+// func (s *StringSuite) TestGetBase64UrlEncoded(c *chk.C) {
+// 	res, err := stringClient.GetBase64UrlEncoded()
+// 	c.Assert(err, chk.IsNil)
+// 	var expected []byte
+// 	base64.URLEncoding.Encode(expected, []byte("a string that gets encoded with base64url"))
+// 	c.Assert(res.Value, chk.DeepEquals, expected)
+// }
+
+// func (s *StringSuite) TestPutBase64UrlEncoded(c *chk.C) {
+// 	var encoded []byte
+// 	base64.URLEncoding.Encode(encoded, []byte("a string that gets encoded with base64url"))
+// 	_, err := stringClient.PutBase64UrlEncoded(encoded)
+// 	c.Assert(err, chk.IsNil)
+// }
+
+// func (s *StringSuite) TestGetNullBase64UrlEncoded(c *chk.C) {
+// 	res, err := stringClient.GetNullBase64UrlEncoded()
+// 	c.Assert(err, chk.IsNil)
+// 	c.Assert(res.Value, chk.IsNil)
+// }
 
 func (s *StringSuite) TestGetNotExpandable(c *chk.C) {
 	str, err := enumClient.GetNotExpandable()

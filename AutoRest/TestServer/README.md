@@ -1,3 +1,3 @@
-cd server
-npm install
-node startup/www
+`cd server`
+`npm install`
+`node startup/www`

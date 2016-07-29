@@ -1,7 +1,7 @@
-package httpInfrastructuregroup_test
+package httpinfrastructuregroup_test
 
 import (
-	. "Tests/Generated/httpInfrastructure"
+	. "Tests/Generated/http-infrastructure"
 	"Tests/go-acceptance-tests/utils"
 	"net/http"
 	"strconv"
@@ -11,6 +11,10 @@ import (
 
 	"github.com/Azure/go-autorest/autorest"
 )
+
+//Not in coverage for now
+//All options tests (200, 307, 400, 403, 412, 502)
+//TODO, 4042586: Support options operations in swagger modeler
 
 func Test(t *testing.T) { chk.TestingT(t) }
 
@@ -111,6 +115,12 @@ func (s *HTTPSuite) TestDelete200(c *chk.C) {
 	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
 }
 
+// func (s *HTTPSuite) TestOptions200(c *chk.C) {
+// 	res, err := httpSuccessClient.Options200()
+// 	c.Assert(err, chk.IsNil)
+// 	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+// }
+
 //201
 
 func (s *HTTPSuite) TestPut201(c *chk.C) {
@@ -201,6 +211,121 @@ func (s *HTTPSuite) TestHead404(c *chk.C) {
 	c.Assert(res.StatusCode, chk.Equals, http.StatusNotFound)
 }
 
+// HTTP redirect test
+//300
+
+func (s *HTTPSuite) TestHead300(c *chk.C) {
+	res, err := httpRedirectClient.Head300()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestGet300(c *chk.C) {
+	res, err := httpRedirectClient.Get300()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+// 301
+
+func (s *HTTPSuite) TestHead301(c *chk.C) {
+	res, err := httpRedirectClient.Head301()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestGet301(c *chk.C) {
+	res, err := httpRedirectClient.Get301()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestPut301(c *chk.C) {
+	b := true
+	res, err := httpRedirectClient.Put301(&b)
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusMovedPermanently)
+}
+
+//302
+
+func (s *HTTPSuite) TestHead302(c *chk.C) {
+	res, err := httpRedirectClient.Head302()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestGet302(c *chk.C) {
+	res, err := httpRedirectClient.Get302()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestPatch302(c *chk.C) {
+	b := true
+	res, err := httpRedirectClient.Patch302(&b)
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusFound)
+}
+
+//303
+
+func (s *HTTPSuite) TestPost303(c *chk.C) {
+	b := true
+	res, err := httpRedirectClient.Post303(&b)
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+//307
+
+func (s *HTTPSuite) TestHead307(c *chk.C) {
+	res, err := httpRedirectClient.Head307()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestGet307(c *chk.C) {
+	res, err := httpRedirectClient.Get307()
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestPut307(c *chk.C) {
+	b := true
+	res, err := httpRedirectClient.Put307(&b)
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestPost307(c *chk.C) {
+	b := true
+	res, err := httpRedirectClient.Post307(&b)
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestPatch307(c *chk.C) {
+	b := true
+	res, err := httpRedirectClient.Patch307(&b)
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+func (s *HTTPSuite) TestDelete307(c *chk.C) {
+	b := true
+	res, err := httpRedirectClient.Delete307(&b)
+	// Code does not redirect if its not Get or Head
+	c.Assert(err, chk.IsNil)
+	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+}
+
+// func (s *HTTPSuite) TestOptions307(c *chk.C) {
+// 	res, err := httpRedirectClient.Options307()
+// 	c.Assert(err, chk.IsNil)
+// 	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+// }
+
 // HTTP failure test
 
 func (s *HTTPSuite) TestGetEmptyError(c *chk.C) {
@@ -258,6 +383,12 @@ func (s *HTTPSuite) TestDelete400(c *chk.C) {
 	c.Assert(res.StatusCode, chk.Equals, http.StatusBadRequest)
 }
 
+// func (s *HTTPSuite) TestOptions400(c *chk.C) {
+// 	res, err := httpClientFailureClient.Options400()
+// 	c.Assert(err, chk.NotNil)
+// 	c.Assert(res.StatusCode, chk.Equals, http.StatusBadRequest)
+// }
+
 //401
 
 func (s *HTTPSuite) TestHead401(c *chk.C) {
@@ -281,6 +412,12 @@ func (s *HTTPSuite) TestGet403(c *chk.C) {
 	c.Assert(err, chk.NotNil)
 	c.Assert(res.StatusCode, chk.Equals, http.StatusForbidden)
 }
+
+// func (s *HTTPSuite) TestOptions403(c *chk.C) {
+// 	res, err := httpClientFailureClient.Options403()
+// 	c.Assert(err, chk.NotNil)
+// 	c.Assert(res.StatusCode, chk.Equals, http.StatusForbidden)
+// }
 
 //404
 
@@ -350,6 +487,12 @@ func (s *HTTPSuite) TestGet412(c *chk.C) {
 	c.Assert(err, chk.NotNil)
 	c.Assert(res.StatusCode, chk.Equals, http.StatusPreconditionFailed)
 }
+
+// func (s *HTTPSuite) TestOptions412(c *chk.C) {
+// 	res, err := httpClientFailureClient.Options412()
+// 	c.Assert(err, chk.NotNil)
+// 	c.Assert(res.StatusCode, chk.Equals, http.StatusPreconditionFailed)
+// }
 
 //413
 
@@ -436,6 +579,12 @@ func (s *HTTPSuite) TestGet502(c *chk.C) {
 	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
 }
 
+// func (s *HTTPSuite) TestOptions502(c *chk.C) {
+// 	res, err := httpRetryClient.Options502()
+// 	c.Assert(err, chk.IsNil)
+// 	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
+// }
+
 //503
 
 func (s *HTTPSuite) TestPost503(c *chk.C) {
@@ -464,118 +613,6 @@ func (s *HTTPSuite) TestPut504(c *chk.C) {
 func (s *HTTPSuite) TestPatch504(c *chk.C) {
 	b := true
 	res, err := httpRetryClient.Patch504(&b)
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-// HTTP redirect test
-//300
-
-func (s *HTTPSuite) TestHead300(c *chk.C) {
-	res, err := httpRedirectClient.Head300()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestGet300(c *chk.C) {
-	res, err := httpRedirectClient.Get300()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-// 301
-
-func (s *HTTPSuite) TestHead301(c *chk.C) {
-	res, err := httpRedirectClient.Head301()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestGet301(c *chk.C) {
-	res, err := httpRedirectClient.Get301()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestPut301(c *chk.C) {
-	b := true
-	res, err := httpRedirectClient.Put301(&b)
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusMovedPermanently)
-}
-
-//302
-
-func (s *HTTPSuite) TestHead302(c *chk.C) {
-	res, err := httpRedirectClient.Head302()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestGet302(c *chk.C) {
-	res, err := httpRedirectClient.Get302()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestPatch302(c *chk.C) {
-	b := true
-	res, err := httpRedirectClient.Patch302(&b)
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusFound)
-}
-
-//303
-
-func (s *HTTPSuite) TestPost303(c *chk.C) {
-	b := true
-	res, err := httpRedirectClient.Post303(&b)
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-//307 --n yet
-
-func (s *HTTPSuite) TestHead307(c *chk.C) {
-	res, err := httpRedirectClient.Head307()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestGet307(c *chk.C) {
-	res, err := httpRedirectClient.Get307()
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-//falta uno de options? ya vere despues que onda con lo de options, esta en el swagger...
-//pos no esta en el codigo genrado por autorest
-
-func (s *HTTPSuite) TestPut307(c *chk.C) {
-	b := true
-	res, err := httpRedirectClient.Put307(&b)
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestPost307(c *chk.C) {
-	b := true
-	res, err := httpRedirectClient.Post307(&b)
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestPatch307(c *chk.C) {
-	b := true
-	res, err := httpRedirectClient.Patch307(&b)
-	c.Assert(err, chk.IsNil)
-	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
-}
-
-func (s *HTTPSuite) TestDelete307(c *chk.C) {
-	b := true
-	res, err := httpRedirectClient.Delete307(&b)
-	// Code does not redirect if its not Get or Head
 	c.Assert(err, chk.IsNil)
 	c.Assert(res.StatusCode, chk.Equals, http.StatusOK)
 }

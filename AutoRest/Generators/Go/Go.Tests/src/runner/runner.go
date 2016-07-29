@@ -86,7 +86,8 @@ func runTests(allPass *bool) {
 
 func getReport() {
 	fmt.Println("Get report...")
-	var reportClient = report.NewWithBaseURI(utils.GetBaseURI(), "jsklad")
+	// var reportClient = report.NewWithBaseURI(utils.GetBaseURI(), "jsklad")
+	var reportClient = report.NewWithBaseURI(utils.GetBaseURI())
 	res, err := reportClient.GetReport()
 	if err != nil {
 		fmt.Println("Error:", err)

@@ -1,16 +1,3 @@
-/*
-cn be fixed casting expected data types (these tests were passing on G tests)
-(are the tests really supposed top cast the expected types?)
-(eg, int to int32, or string to CMYKColors)
-TestHeaderResponseFloatNegative (fixed by writing -3.0, instead of -3)
-
-this ones can be fixed by casting the expected value
-TestHeaderResponseIntNegative
-TestHeaderResponseIntPositive
-TestHeaderResponseLongNegative
-TestHeaderResponseLongPositive
-*/
-
 package headergroup_test
 
 import (

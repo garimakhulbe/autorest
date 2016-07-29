@@ -3,6 +3,8 @@ package numbergroup_test
 import (
 	"testing"
 
+	"github.com/shopspring/decimal"
+
 	chk "gopkg.in/check.v1"
 
 	. "Tests/Generated/body-number"
@@ -110,47 +112,46 @@ func (s *NumberSuite) TestGetInvalidDecimal(c *chk.C) {
 	c.Assert(err, chk.NotNil)
 }
 
-//Decimal stuff hasn't been updated in the server yet
-// func (s *NumberSuite) TestGetBigDecimal(c *chk.C) {
-// 	res, err := numberClient.GetBigDecimal()
-// 	c.Assert(err, chk.IsNil)
-// 	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloatWithExponent(2.5976931, 101))
-// }
+func (s *NumberSuite) TestGetBigDecimal(c *chk.C) {
+	res, err := numberClient.GetBigDecimal()
+	c.Assert(err, chk.IsNil)
+	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloatWithExponent(2.5976931, 101))
+}
 
-// func (s *NumberSuite) TestGetSmallDecimal(c *chk.C) {
-// 	res, err := numberClient.GetSmallDecimal()
-// 	c.Assert(err, chk.IsNil)
-// 	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloatWithExponent(2.5976931, -101))
-// }
+func (s *NumberSuite) TestGetSmallDecimal(c *chk.C) {
+	res, err := numberClient.GetSmallDecimal()
+	c.Assert(err, chk.IsNil)
+	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloatWithExponent(2.5976931, -101))
+}
 
-// func (s *NumberSuite) TestGetBigDecimalPositiveDecimal(c *chk.C) {
-// 	res, err := numberClient.GetBigDecimalPositiveDecimal()
-// 	c.Assert(err, chk.IsNil)
-// 	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloat(99999999.99))
-// }
+func (s *NumberSuite) TestGetBigDecimalPositiveDecimal(c *chk.C) {
+	res, err := numberClient.GetBigDecimalPositiveDecimal()
+	c.Assert(err, chk.IsNil)
+	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloat(99999999.99))
+}
 
-// func (s *NumberSuite) TestGetBigDecimalNegativeDecimal(c *chk.C) {
-// 	res, err := numberClient.GetBigDecimalNegativeDecimal()
-// 	c.Assert(err, chk.IsNil)
-// 	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloat(-99999999.99))
-// }
+func (s *NumberSuite) TestGetBigDecimalNegativeDecimal(c *chk.C) {
+	res, err := numberClient.GetBigDecimalNegativeDecimal()
+	c.Assert(err, chk.IsNil)
+	c.Assert(*res.Value, chk.DeepEquals, decimal.NewFromFloat(-99999999.99))
+}
 
-// func (s *NumberSuite) TestPutBigDecimal(c *chk.C) {
-// 	_, err := numberClient.PutBigDecimal(decimal.NewFromFloatWithExponent(2.5976931, 101))
-// 	c.Assert(err, chk.IsNil)
-// }
+func (s *NumberSuite) TestPutBigDecimal(c *chk.C) {
+	_, err := numberClient.PutBigDecimal(decimal.NewFromFloatWithExponent(2.5976931, 101))
+	c.Assert(err, chk.IsNil)
+}
 
-// func (s *NumberSuite) TestPutSmallDecimal(c *chk.C) {
-// 	_, err := numberClient.PutSmallDecimal(decimal.NewFromFloatWithExponent(2.5976931, -101))
-// 	c.Assert(err, chk.IsNil)
-// }
+func (s *NumberSuite) TestPutSmallDecimal(c *chk.C) {
+	_, err := numberClient.PutSmallDecimal(decimal.NewFromFloatWithExponent(2.5976931, -101))
+	c.Assert(err, chk.IsNil)
+}
 
-// func (s *NumberSuite) TestPutBigDecimalPositiveDecimal(c *chk.C) {
-// 	_, err := numberClient.PutBigDecimalPositiveDecimal(decimal.NewFromFloat(99999999.99))
-// 	c.Assert(err, chk.IsNil)
-// }
+func (s *NumberSuite) TestPutBigDecimalPositiveDecimal(c *chk.C) {
+	_, err := numberClient.PutBigDecimalPositiveDecimal(decimal.NewFromFloat(99999999.99))
+	c.Assert(err, chk.IsNil)
+}
 
-// func (s *NumberSuite) TestPutBigDecimalNegativeDecimal(c *chk.C) {
-// 	_, err := numberClient.PutBigDecimalNegativeDecimal(decimal.NewFromFloat(-99999999.99))
-// 	c.Assert(err, chk.IsNil)
-// }
+func (s *NumberSuite) TestPutBigDecimalNegativeDecimal(c *chk.C) {
+	_, err := numberClient.PutBigDecimalNegativeDecimal(decimal.NewFromFloat(-99999999.99))
+	c.Assert(err, chk.IsNil)
+}

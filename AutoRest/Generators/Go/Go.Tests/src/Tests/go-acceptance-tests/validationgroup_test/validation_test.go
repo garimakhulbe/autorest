@@ -18,7 +18,7 @@ var _ = chk.Suite(&ValidationSuite{})
 var validationClient = getValidationClient()
 
 func getValidationClient() ManagementClient {
-	c := New("abc123", "1234-34-781")
+	c := New("abc123")
 	c.BaseURI = utils.GetBaseURI()
 	return c
 }

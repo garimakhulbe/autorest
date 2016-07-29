@@ -1,12 +1,3 @@
-/*
-TestGetDoubleInvalidNull
-TestGetEmptyArray
-TestGetFloatInvalidNull
-TestGetIntInvalidNull
-
-Am I sure these tests above are working as intended? Their if else path is very different form others...
-*/
-
 package arraygroup_test
 
 import (
@@ -20,6 +11,10 @@ import (
 	. "Tests/Generated/body-array"
 	"Tests/go-acceptance-tests/utils"
 )
+
+//Not in coverage, for now
+//So swagger files are not changed, code for this tests won't be generated
+//TestGetBase64Url
 
 func Test(t *testing.T) { chk.TestingT(t) }
 
@@ -100,8 +95,6 @@ func (s *ArrayGroupSuite) TestGetEmptyArray(c *chk.C) {
 	if err != nil {
 		c.SucceedNow()
 	}
-	//c.Assert(err, chk.NotNil)
-	//fmt.Printf("Expecting error, got %v\n", err)
 	c.Assert(*res.Value, chk.DeepEquals, []int32{})
 }
 
@@ -145,7 +138,6 @@ func (s *ArrayGroupSuite) TestGetBooleanTfft(c *chk.C) {
 func (s *ArrayGroupSuite) TestGetByteInvalidNullArray(c *chk.C) {
 	res, err := arrayClient.GetByteInvalidNull()
 	c.Assert(err, chk.IsNil)
-	// expected := [][]byte{{171, 172, 173}, nil}
 	c.Assert(*res.Value, chk.DeepEquals, [][]byte{{171, 172, 173}, nil})
 }
 
@@ -166,6 +158,16 @@ func (s *ArrayGroupSuite) TestGetByteValidArray(c *chk.C) {
 		{1, 2, 3},
 		{37, 41, 67}})
 }
+
+// func (s *ArrayGroupSuite) TestGetBase64Url(c *chk.C) {
+// 	res, err := arrayClient.GetBase64Url()
+// 	c.Assert(err, chk.IsNil)
+// 	c.Assert(*res.Value, chk.HasLen, 3)
+// 	c.Assert(*res.Value, chk.DeepEquals, []string{
+// 		base64.URLEncoding.EncodeToString([]byte("a string that gets encoded with base64url")),
+// 		base64.URLEncoding.EncodeToString([]byte("test string")),
+// 		base64.URLEncoding.EncodeToString([]byte("Lorem ipsum"))})
+// }
 
 func (s *ArrayGroupSuite) TestGetComplexValidArray(c *chk.C) {
 	res, err := arrayClient.GetComplexValid()
@@ -290,8 +292,6 @@ func (s *ArrayGroupSuite) TestGetFloatInvalidNull(c *chk.C) {
 	if err != nil {
 		c.SucceedNow()
 	}
-	//c.Assert(err, chk.NotNil)
-	//fmt.Printf("Expecting error, got %v\n", err.Error())
 	c.Assert(*res.Value, chk.DeepEquals, []float64{0, 0, -1.2e20})
 }
 
@@ -318,8 +318,6 @@ func (s *ArrayGroupSuite) TestGetIntInvalidNull(c *chk.C) {
 	if err != nil {
 		c.SucceedNow()
 	}
-	//c.Assert(err, chk.NotNil)
-	//fmt.Printf("Expecting error, got %v\n", err.Error())
 	c.Assert(*res.Value, chk.DeepEquals, []int32{1, 0, 0})
 }
 

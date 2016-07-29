@@ -12,6 +12,12 @@ import (
 	"Tests/go-acceptance-tests/utils"
 )
 
+//Not in coverage, yet
+
+//So swagger files are not changed, code for this tests won't be generated
+//TestGetBase64Url
+//TestGetComplexInvalidCharsDictionary
+
 func Test(t *testing.T) { chk.TestingT(t) }
 
 type DictionaryGroupSuite struct{}
@@ -102,6 +108,19 @@ func (s *DictionaryGroupSuite) TestGetByteInvalidNullDictionary(c *chk.C) {
 	c.Assert(err, chk.IsNil)
 	c.Assert(*res.Value, chk.DeepEquals, map[string][]byte{"0": {171, 172, 173}, "1": nil})
 }
+
+// func (s *DictionaryGroupSuite) TestGetBase64Url(c *chk.C) {
+// 	res, err := dictionaryClient.GetBase64Url()
+// 	c.Assert(err, chk.IsNil)
+// 	var val0, val1, val2 []byte
+// 	base64.URLEncoding.Encode(val0, []byte("a string that gets encoded with base64url"))
+// 	base64.URLEncoding.Encode(val1, []byte("test string"))
+// 	base64.URLEncoding.Encode(val2, []byte("Lorem ipsum"))
+// 	c.Assert(*res.Value, chk.DeepEquals, map[string][]byte{
+// 		"0": val0,
+// 		"1": val1,
+// 		"2": val2})
+// }
 
 func (s *DictionaryGroupSuite) TestGetComplexEmptyDictionary(c *chk.C) {
 	res, err := dictionaryClient.GetComplexEmpty()
