@@ -52,7 +52,7 @@ type @(Model.ClientName) struct {
 
 @EmptyLine
 @WrapComment("// ", string.Format("New creates an instance of the {0} client.", Model.ClientName))
-func New(@(Model.GlobalParameters)) @(Model.ClientName) {
+func @(Model.UpdateNameIfDuplicate("New"))(@(Model.GlobalParameters)) @(Model.ClientName) {
     return NewWithBaseURI(DefaultBaseURI, @(Model.HelperGlobalParameters))
 }
 
@@ -60,7 +60,7 @@ func New(@(Model.GlobalParameters)) @(Model.ClientName) {
 @WrapComment("// ", string.Format("NewWithBaseURI creates an instance of the {0} client.", Model.ClientName))
 func NewWithBaseURI(baseURI string, @(Model.GlobalParameters)) @(Model.ClientName) {
    return @(Model.ClientName){
-        Client: autorest.NewClientWithUserAgent(UserAgent()),
+        Client: autorest.NewClientWithUserAgent(@(Model.UpdateNameIfDuplicate("UserAgent")))(),
         BaseURI: baseURI,
         APIVersion: APIVersion,
         @foreach (var p in Model.Properties)

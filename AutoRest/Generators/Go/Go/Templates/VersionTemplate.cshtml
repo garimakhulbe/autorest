@@ -36,12 +36,12 @@ const (
 
 @EmptyLine
 // UserAgent returns the UserAgent string to use when sending http.Requests.
-func UserAgent() string {
-    return fmt.Sprintf(userAgentFormat, Version(), "@(Model.PackageName)", "@(Model.ApiVersion)")
+func @(Model.UpdateNameIfDuplicate("UserAgent"))() string {
+    return fmt.Sprintf(userAgentFormat, @(Model.UpdateNameIfDuplicate("Version"))(), "@(Model.PackageName)", "@(Model.ApiVersion)")
 }
 
 @EmptyLine
 // Version returns the semantic version (see http://semver.org) of the client.
-func Version() string {
+func @(Model.UpdateNameIfDuplicate("Version"))() string {
     return fmt.Sprintf(semVerFormat, major, minor, patch, tag)
 }

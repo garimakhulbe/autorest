@@ -5,8 +5,10 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Microsoft.Rest.Generator.Azure;
 using Microsoft.Rest.Generator.ClientModel;
 using Microsoft.Rest.Generator.Utilities;
@@ -685,6 +687,23 @@ namespace Microsoft.Rest.Generator.Go
             }
 
             return nextLink;
+        }
+
+        public static string UpdateNameIfDuplicate(this ServiceClient model, string attributeName)
+        {
+            bool isDuplicateEnumName = false;
+            foreach (var e in model.EnumTypes)
+            {
+                if (e.Values.Any(v => v.Name == attributeName))
+                {
+                    isDuplicateEnumName = true;
+                }
+                if (isDuplicateEnumName)
+                    break;
+            }
+            return model.ModelTypes.Any(p => p.Name == attributeName) || isDuplicateEnumName
+                ? $"{attributeName}{model.Namespace}"
+                : attributeName;
         }
 
     }
