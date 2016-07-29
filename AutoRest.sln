@@ -109,6 +109,30 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.Extensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.Extensions.Tests", "AutoRest\Generators\Extensions\Extensions.Tests\AutoRest.Generator.Extensions.Tests.csproj", "{25B049BF-66AC-4B7A-B6B1-3DC74DE3951C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Python", "Python", "{74F7C659-952F-400C-839F-90BED9BB66C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.Azure.Python", "AutoRest\Generators\Python\Azure.Python\AutoRest.Generator.Azure.Python.csproj", "{E631A573-C789-4E13-ABE8-5941A8008DC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.Python", "AutoRest\Generators\Python\Python\AutoRest.Generator.Python.csproj", "{B3AC3239-0B12-415A-94CE-BFF6DE1A537E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.Azure.Python.Tests", "AutoRest\Generators\Python\Azure.Python.Tests\AutoRest.Generator.Azure.Python.Tests.csproj", "{A29CBB5F-19A8-4E80-8D16-722B02B0CF94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.Python.Tests", "AutoRest\Generators\Python\Python.Tests\AutoRest.Generator.Python.Tests.csproj", "{3BA8DBC9-AF2B-4CE8-A180-803E055B2FEB}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Python.Tests", "AutoRest\Generators\Python\Python.Tests\Python.Tests.pyproj", "{312B07BC-A830-4289-91B4-C53A2EC37D58}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Azure.Python.Tests", "AutoRest\Generators\Python\Azure.Python.Tests\Azure.Python.Tests.pyproj", "{74BE0601-FF65-4B46-8A8B-E670056061C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Modeler.CompositeSwagger", "AutoRest\Modelers\CompositeSwagger\AutoRest.Modeler.CompositeSwagger.csproj", "{31AEC9B5-35C9-4FEA-8420-4C34D3FEAAC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Modeler.CompositeSwagger.Tests", "AutoRest\Modelers\CompositeSwagger.Tests\AutoRest.Modeler.CompositeSwagger.Tests.csproj", "{DA37E6A9-5D59-45A3-A809-ABA85031C369}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureResourceSchema", "AzureResourceSchema", "{B6A1FC1E-0779-4900-84EE-262DD0E53FF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.AzureResourceSchema", "AutoRest\Generators\AzureResourceSchema\AzureResourceSchema\AutoRest.Generator.AzureResourceSchema.csproj", "{654344A5-0556-49C7-BFB3-59676D7440D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoRest.Generator.AzureResourceSchema.Tests", "AutoRest\Generators\AzureResourceSchema\AzureResourceSchema.Tests\AutoRest.Generator.AzureResourceSchema.Tests.csproj", "{1C3B4A33-E045-4C8F-9202-1B651A686567}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
