@@ -1,0 +1,19 @@
+hash: e33d98082bdab9f30032ec6f8f9e2539e549ccbe3dfaf45f1a16702217018912
+updated: 2016-08-05T13:19:57.3271415-07:00
+imports:
+- name: github.com/Azure/go-autorest
+  version: 5e7a66444c63a586074b1aad0eeaf47e0860555c
+  subpackages:
+  - autorest
+  - autorest/azure
+  - autorest/date
+  - autorest/validation
+- name: github.com/dgrijalva/jwt-go
+  version: 63734eae1ef55eaac06fdc0f312615f2e321e273
+- name: github.com/satori/uuid
+  version: 0aa62d5ddceb50dbcb909d790b5345affd3669b6
+- name: github.com/shopspring/decimal
+  version: 74d668a796fa3734c552fb907d9b83146d0bebee
+- name: gopkg.in/check.v1
+  version: 4f90aeace3a26ad7021961c297b22c42160c7b25
+testImports: []
