@@ -2,10 +2,10 @@ package complexgrouptest
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 	"time"
 
-	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/date"
 	"github.com/Azure/go-autorest/autorest/validation"
 	chk "gopkg.in/check.v1"
@@ -76,11 +76,9 @@ func (s *ComplexGroupSuite) TestReadOnlyComplex(c *chk.C) {
 	c.Assert(err, chk.IsNil)
 	_, err = complexReadOnlyClient.PutValid(res)
 	c.Assert(err, chk.NotNil)
-	c.Assert(validation.Error{Constraint: "ReadOnly",
-		Target:      "ID",
-		TargetValue: "1234",
-		Details:     "readonly parameter; must send as nil or Empty in request",
-	}, chk.DeepEquals, err.(autorest.DetailedError).Original.(validation.Error))
+	expected := fmt.Errorf("autorest/validation: validation failed: parameter=%s constraint=%s value=%#v details: %s",
+		"ID", "ReadOnly", "1234", "readonly parameter; must send as nil or empty in request")
+	c.Assert(err.Error(), chk.Equals, validation.NewErrorWithValidationError(expected, "complexgroup.ReadonlypropertyClient", "PutValid").Error())
 }
 
 // Primitive tests
