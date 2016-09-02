@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Globalization;
+using System.Data.Entity.Design.PluralizationServices;
 
 using AutoRest.Core.ClientModel;
 using AutoRest.Core.Utilities;
@@ -87,6 +89,26 @@ namespace AutoRest.Go
         public static string[] ToWords(this string value)
         {
             return SplitPattern.Split(value).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+        }
+
+        public static string Singularize(this string value)
+        {
+            PluralizationService ps = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-us"));
+            return ps.Singularize(value);
+        }
+
+        /// <summary>
+        /// This method checks if MethodGroupName is plural of package name.
+        /// if yes, it does not remove package name from group name.
+        /// Example, group EventHubs in package EventHub.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="packageName"></param>
+        /// <returns></returns>
+        public static bool IsNamePlural(this string value, string packageName)
+        {
+            PluralizationService ps = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-us"));
+            return (ps.IsPlural(value) && ps.Singularize(value).ToLower() == packageName.ToLower());
         }
 
         /// <summary>
@@ -784,7 +806,7 @@ namespace AutoRest.Go
 
             x.AddRange(from prop in ((CompositeType)p.Type).Properties
                        where prop.IsReadOnly
-                       select GetConstraint(prop.Name, ReadOnlyConstraint, "true"));
+                       select GetConstraint($"{name}.{prop.Name}", ReadOnlyConstraint, "true"));
 
             List<string> y = new List<string>();
             if (x.Count > 0)

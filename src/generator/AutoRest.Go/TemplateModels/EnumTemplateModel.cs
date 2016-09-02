@@ -34,7 +34,9 @@ namespace AutoRest.Go.TemplateModels
                 Values
                     .ForEach(v =>
                     {
-                        constants.Add(HasUniqueNames ? v.Name : Name + v.Name, v.SerializedName);
+                        constants.Add(HasUniqueNames 
+                            ? v.Name 
+                            : Name + v.Name.TrimEnd('1'), v.SerializedName);
                     });
 
                 return constants;

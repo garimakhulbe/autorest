@@ -60,7 +60,8 @@ namespace AutoRest.Go
         public override async Task Generate(ServiceClient serviceClient)
         {
             string packageName = GoCodeNamer.PackageNameFromNamespace(Settings.Namespace);
-            
+            string[] version = GoCodeNamer.SDKVersionFromPackageVersion(Settings.PackageVersion);
+
             // Service client
             var serviceClientTemplate = new ServiceClientTemplate
             {
@@ -87,7 +88,7 @@ namespace AutoRest.Go
             // Version
             var versionTemplate = new VersionTemplate
             {
-                Model = new VersionTemplateModel(serviceClient, packageName),
+                Model = new VersionTemplateModel(serviceClient, packageName, version),
             };
             await Write(versionTemplate, GoCodeNamer.FormatFileName("version"));
         }

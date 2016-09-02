@@ -62,6 +62,16 @@ namespace AutoRest.Go
 	                                                                        "Xss",
                                                                         };
 
+        public static readonly List<string> UserDefinedNames = new List<string>() {
+                                                                            "UserAgent",
+                                                                            "Version",
+                                                                            "APIVersion",
+                                                                            "DefaultBaseURI",
+                                                                            "ManagementClient",
+                                                                            "NewWithBaseURI",
+                                                                            "New",
+                                                                        };
+
         private readonly Dictionary<IType, IType> _normalizedTypes;
 
         public static readonly Dictionary<HttpStatusCode, string> StatusCodeToGoString;
@@ -291,6 +301,8 @@ namespace AutoRest.Go
                     }
                 }
             }
+
+            normalizedTypesForUserDefinedNames(client);
         }
 
         /// <summary>
@@ -563,6 +575,10 @@ namespace AutoRest.Go
             {
                 return name;
             }
+            if (name.IsNamePlural(PackageName))
+            {
+                return EnsureNameCase(PascalCase(RemoveInvalidCharacters(GetEscapedReservedName(name, "Group"))));
+            }
             return EnsureNameCase(PascalCase(RemoveInvalidCharacters(GetEscapedReservedName(name, "Group"))).TrimPackageName(PackageName));
         }
 
@@ -715,6 +731,20 @@ namespace AutoRest.Go
             return namespaceParts[namespaceParts.Count() - 1];
         }
 
+        public static string[] SDKVersionFromPackageVersion(string v)
+        {
+            if (string.IsNullOrEmpty(v))
+            {
+                throw new ArgumentNullException("package version");
+            }
+            string[] version = v.Split('.');
+            if (version.Length != 3)
+            {
+                throw new InvalidOperationException("version string should have major, minor and patch versions.");
+            }
+            return version;
+        }
+
         public override string EscapeDefaultValue(string defaultValue, IType type)
         {
             if (type == null)
@@ -751,6 +781,21 @@ namespace AutoRest.Go
                 }
             }
             return defaultValue;
+        }
+
+        /// <summary>
+        /// This method adds digit 1 to type name if type name from swagger 
+        /// conflicts with user defined variable names or method names defined by us. 
+        /// </summary>
+        /// <param name="client"></param>
+        private void normalizedTypesForUserDefinedNames(ServiceClient client)
+        {
+            client.ModelTypes.ToList().ForEach(t =>
+            {
+                t.Name = UserDefinedNames.Contains(t.Name)
+                                 ? $"{t.Name}{PackageName.Capitalize()}"
+                                 : t.Name;
+            });
         }
     }
 }

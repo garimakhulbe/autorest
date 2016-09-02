@@ -15,12 +15,14 @@ namespace AutoRest.Go.TemplateModels
         public static readonly List<string> StandardImports = new List<string> { "fmt" };
 
         public readonly string PackageName;
+        public readonly string[] VersionString;
 
-        public VersionTemplateModel(ServiceClient serviceClient, string packageName)
+        public VersionTemplateModel(ServiceClient serviceClient, string packageName, string[] versionString)
         {
             this.LoadFrom(serviceClient);
 
             PackageName = packageName;
+            VersionString = versionString;
         }
 
         public virtual IEnumerable<string> Imports

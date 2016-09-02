@@ -34,7 +34,9 @@ namespace AutoRest.Go.TemplateModels
             BaseClient = "ManagementClient";
             ClientName = string.IsNullOrEmpty(MethodGroupName)
                             ? BaseClient
-                            : (MethodGroupName + "Client").TrimPackageName(PackageName);
+                            : MethodGroupName.IsNamePlural(PackageName)
+                                            ? MethodGroupName + "Client"
+                                            : (MethodGroupName + "Client").TrimPackageName(PackageName);
 
             MethodScope = new MethodScopeProvider();
             MethodTemplateModels = new List<MethodTemplateModel>();

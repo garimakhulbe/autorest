@@ -521,7 +521,8 @@ gulp.task('regenerate:expected:go', function(cb){
     'inputBaseDir': 'src/generator/AutoRest.Go.Tests',
     'mappings': goMappings,
     'outputDir': 'src/tests/generated',
-    'codeGenerator': 'Go'
+    'codeGenerator': 'Go',
+    'pv': '0.0.0'
   }, cb);
   process.env.GOPATH = __dirname + '/src/generator/AutoRest.Go.Tests';
 })
